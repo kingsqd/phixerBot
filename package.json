@@ -1,0 +1,17 @@
+{
+  "name": "tob_srekaens",
+  "version": "1.0.0",
+  "description": "shopify bot",
+  "main": "Bot.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Hakeem King",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
+  "bin": {
+    "run-it": "node Bot.js"
+  }
+}
