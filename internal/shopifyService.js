@@ -20,6 +20,7 @@ function getAvailability(data, pageNumber) {
 
     var found = false;
     var id = '';
+    var j = data.length - 1;
     for (var i = 0; i < data.length; i++) {
       // for now was just hardcoding single product to find.
       // TODO: read the product title from a user input
@@ -28,6 +29,16 @@ function getAvailability(data, pageNumber) {
         id = data[i].variants[0].id;
         break;
       }
+      if (data[j].title.includes('Needles 7 Cuts College S/S Tee')) {
+        found = true;
+        id = data[j].variants[0].id;
+        break;
+      }
+
+      if (i == j) {
+        break;
+      }
+      j--;
     }
 
     if (!found) {
