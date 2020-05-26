@@ -5,7 +5,7 @@ const addToCart = (id) => {
     var url = shopifyConstants.featureUrl + 'cart/add.js?id=' + id + '&quantity=1';
     axios.post(url)
     .then(response => {
-      console.log(response);
+      console.log('added to cart');
       startCheckout();
     })
     .catch(error => {
