@@ -1,18 +1,41 @@
 const axios = require('axios');
 const shopifyConstants = require('./shopifyConstants.js');
-const checkoutService = require('./checkoutService.js');
+const BlueBird = require('bluebird');
+const Http = BlueBird.promisify(require('req-fast'));
+let checkoutService = new (require('./checkoutService.js'))();
 
-const startShopifyBot = (pageNumber) => {
-  axios.get(shopifyConstants.featureUrl + 'products.json?limit=100&page=' + pageNumber)
-  .then(response => {
-    getAvailability(response.data.products, pageNumber);
-  })
-  .catch(error => {
-    console.log(error);
-  });
+let startShopifyBot = async (pageNumber) => {
+  try {
+    let queryParams = {
+      "limit": 100,
+      "page": pageNumber
+    }
+    let productListResult = await Http({
+      uri: shopifyConstants.featureUrl + 'products.json',
+      trackCookie: true,
+      method: "GET",
+      data: queryParams,
+      headers: {
+          accept: "application/json, text/html, text/*, application/*"
+      }
+    });
+    await getAvailability(productListResult.body.products, pageNumber);
+    // axios.get(shopifyConstants.featureUrl + 'products.json?limit=100&page=' + pageNumber)
+    // .then(response => {
+    //   console.log('searching on page: ' + pageNumber);
+    //    getAvailability(response.data.products, pageNumber);
+    // })
+    // .catch(error => {
+    //   console.log(error);
+    // });
+  } catch (Error) {
+
+  }
+  
+  
 }
 
-function getAvailability(data, pageNumber) {
+let getAvailability = async (data, pageNumber) => {
     if (data.length == 0) {
       console.log('not found');
       return;
@@ -24,12 +47,12 @@ function getAvailability(data, pageNumber) {
     for (var i = 0; i < data.length; i++) {
       // for now was just hardcoding single product to find.
       // TODO: read the product title from a user input
-      if (data[i].title.includes('Needles 7 Cuts College S/S Tee')) {
+      if (data[i].title.includes('Feature Spike Trucker Hat V2 - Navy/Yellow')) {
         found = true;
         id = data[i].variants[0].id;
         break;
       }
-      if (data[j].title.includes('Needles 7 Cuts College S/S Tee')) {
+      if (data[j].title.includes('Feature Spike Trucker Hat V2 - Navy/Yellow')) {
         found = true;
         id = data[j].variants[0].id;
         break;
@@ -41,11 +64,15 @@ function getAvailability(data, pageNumber) {
       j--;
     }
 
-    if (!found) {
-      startShopifyBot(pageNumber + 1);
-    } else {
-      console.log('found');
-      checkoutService.addProductToCart(id);
+    try {
+      if (!found) {
+        await startShopifyBot(pageNumber + 1);
+      } else {
+        console.log('found id: ' + id);
+        await checkoutService.AddToCart(id);
+      }
+    } catch(E) {
+
     }
 }
 
