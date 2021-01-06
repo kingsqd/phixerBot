@@ -9,7 +9,7 @@
   "author": "Hakeem King",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "events": "^3.1.0",
     "req-fast": "^0.2.19"
